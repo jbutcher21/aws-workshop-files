@@ -16,9 +16,9 @@ This repository contains all materials for learning data mapping and entity reso
 You've just opened this folder in your IDE with your AI agent plugin open.  Here's what to do:
 
 1. **Read this README** - Understand what's in this repository and how the workshop works
-2. **Explore the `workshop/senzing/` directory** - This contains all the reference materials, tools, and prompts you'll use
+2. **Explore the `senzing/` directory** - This contains all the reference materials, tools, and prompts you'll use
 3. **Ask your AI agent** - Your AI agent can help you understand the materials. Try asking:
-   - "What's in the workshop/senzing/ directory?"
+   - "What's in the senzing/ directory?"
    - "Show me the Senzing entity specification"
    - "Explain what the AI mapping assistant does"
 4. **Wait for instructor guidance** - Your instructor will guide you through the exercises when it's time to start
@@ -41,7 +41,7 @@ In this workshop, you'll learn to transform source data into Senzing JSON format
 ### Workshop Flow
 
 1. **Introduction to Materials**
-   - Overview of prompts, references, and tools in `workshop/senzing/`
+   - Overview of prompts, references, and tools in `senzing/`
    - Understanding the Senzing entity model
    - Introduction to the AI mapping assistant
 
@@ -81,8 +81,8 @@ In this workshop, you'll learn to transform source data into Senzing JSON format
 - Payload attributes (operational data)
 
 **Files:**
-- Source data: `workshop/workspace/customers/customers.csv`
-- Solution: `workshop/solutions/customers/`
+- Source data: `workspace/customers/customers.csv`
+- Solution: `solutions/customers/`
 
 ### Exercise 2: Watchlist Data Mapping
 
@@ -99,13 +99,13 @@ In this workshop, you'll learn to transform source data into Senzing JSON format
 - Sanction metadata as payload
 
 **Files:**
-- Source data: `workshop/workspace/watchlist/ftm.jsonl`
-- Solution: `workshop/solutions/watchlist/`
+- Source data: `workspace/watchlist/ftm.jsonl`
+- Solution: `solutions/watchlist/`
 
 ## Repository Structure
 
 ```
-workshop/
+.
 ├── senzing/                          # Core workshop materials
 │   ├── prompts/
 │   │   └── senzing_mapping_assistant.md    # AI mapping assistant prompt
@@ -143,7 +143,7 @@ workshop/
 
 ## Senzing Directory Contents
 
-### Prompts (`workshop/senzing/prompts/`)
+### Prompts (`senzing/prompts/`)
 
 **senzing_mapping_assistant.md** - AI mapping assistant prompt that guides through the complete mapping workflow:
 - 5-stage structured process
@@ -151,7 +151,7 @@ workshop/
 - Interactive field disposition
 - Guardrails to prevent hallucination
 
-### Reference Materials (`workshop/senzing/reference/`)
+### Reference Materials (`senzing/reference/`)
 
 **senzing_entity_specification.md** - Master specification document (detailed)
 - Senzing JSON schema and validation rules
@@ -168,13 +168,13 @@ workshop/
 **usage_type_crosswalk.json** - Standard usage type mappings
 - Maps common codes (HOME, BUSINESS, MOBILE, etc.)
 
-### Tools (`workshop/senzing/tools/`)
+### Tools (`senzing/tools/`)
 
 All tools use **Python 3 standard library only** (no pip install required).
 
 **sz_schema_generator.py** - Generate markdown schema from source data
 ```bash
-python3 workshop/senzing/tools/sz_schema_generator.py input.csv -o schema.md
+python3 senzing/tools/sz_schema_generator.py input.csv -o schema.md
 ```
 - Analyzes CSV, JSON, JSONL, Parquet, XML files
 - Outputs field statistics and sample values
@@ -182,7 +182,7 @@ python3 workshop/senzing/tools/sz_schema_generator.py input.csv -o schema.md
 
 **lint_senzing_json.py** - Validate Senzing JSON structure (development tool)
 ```bash
-python3 workshop/senzing/tools/lint_senzing_json.py output.jsonl
+python3 senzing/tools/lint_senzing_json.py output.jsonl
 ```
 - Validates JSON structure against specification
 - Checks required fields and feature families
@@ -191,7 +191,7 @@ python3 workshop/senzing/tools/lint_senzing_json.py output.jsonl
 
 **sz_json_analyzer.py** - Analyze mapping quality (production tool)
 ```bash
-python3 workshop/senzing/tools/sz_json_analyzer.py output.jsonl [-o report.txt]
+python3 senzing/tools/sz_json_analyzer.py output.jsonl [-o report.txt]
 ```
 - Analyzes feature usage, population, uniqueness
 - Detects mapped vs unmapped attributes
@@ -199,7 +199,7 @@ python3 workshop/senzing/tools/sz_json_analyzer.py output.jsonl [-o report.txt]
 - Reports data quality warnings
 - Use AFTER linting, BEFORE loading into Senzing
 
-### Tools Reference (`workshop/senzing/SENZING_TOOLS_REFERENCE.md`)
+### Tools Reference (`senzing/SENZING_TOOLS_REFERENCE.md`)
 
 Comprehensive documentation for all workshop and Senzing core tools:
 - Complete command-line reference with examples
@@ -252,20 +252,20 @@ Follow your instructor's guidance for each exercise. You'll work *with your AI a
 
 **Step 1: Analyze source data**
 ```bash
-python3 workshop/senzing/tools/sz_schema_generator.py source.csv -o source_schema.md
+python3 senzing/tools/sz_schema_generator.py source.csv -o source_schema.md
 ```
 Your AI agent can help you run this command and understand the output.
 
 **Step 2-4: Map with AI assistance (interactive)**
-- Share `workshop/senzing/prompts/senzing_mapping_assistant.md` with your AI agent
+- Share `senzing/prompts/senzing_mapping_assistant.md` with your AI agent
 - Your AI agent will guide you through the 5-stage mapping workflow
 - Your AI agent will help generate your mapper code
 - Ask questions anytime - your AI agent has access to all the reference materials
 
 **Step 5: Validate and analyze**
 ```bash
-python3 workshop/senzing/tools/lint_senzing_json.py output.jsonl
-python3 workshop/senzing/tools/sz_json_analyzer.py output.jsonl -o analysis.txt
+python3 senzing/tools/lint_senzing_json.py output.jsonl
+python3 senzing/tools/sz_json_analyzer.py output.jsonl -o analysis.txt
 ```
 Your AI agent can help fix any validation errors or quality issues.
 
@@ -281,9 +281,9 @@ $SENZING_ROOT/bin/sz_snapshot -o results -Q
 Your AI agent can help interpret the results.
 
 **Working Directories:**
-- Complete your work in `workshop/workspace/customers/` and `workshop/workspace/watchlist/`
+- Complete your work in `workspace/customers/` and `workspace/watchlist/`
 - Your AI agent can navigate these directories and create files for you
-- Reference solutions are available in `workshop/solutions/` (check with instructor on when to use)
+- Reference solutions are available in `solutions/` (check with instructor on when to use)
 
 ### For Instructors
 
@@ -294,14 +294,14 @@ Your AI agent can help interpret the results.
 tree workshop/
 
 # Verify tools are executable
-python3 workshop/senzing/tools/lint_senzing_json.py --self-test
+python3 senzing/tools/lint_senzing_json.py --self-test
 ```
 
 #### 2. Test Solution Mappers
 
 ```bash
 # Test customer mapper with sample
-cd workshop/solutions/customers
+cd solutions/customers
 python3 customers_mapper.py ../../workspace/customers/customers.csv test_output.jsonl --sample 10
 
 # Validate output
@@ -317,7 +317,7 @@ python3 ../../senzing/tools/lint_senzing_json.py test_output.jsonl
 
 ```bash
 # Review the AI prompt that participants will use
-cat workshop/senzing/prompts/senzing_mapping_assistant.md
+cat senzing/prompts/senzing_mapping_assistant.md
 ```
 
 Key features of the assistant:
@@ -369,9 +369,9 @@ See the "For Workshop Participants" section above for the complete participant w
 
 ### Essential Reading
 
-- **`workshop/senzing/reference/senzing_entity_specification.md`** - Master specification for Senzing JSON format (comprehensive reference)
-- **`workshop/senzing/prompts/senzing_mapping_assistant.md`** - AI assistant prompt to share with your AI agent for guided mapping
-- **`workshop/senzing/SENZING_TOOLS_REFERENCE.md`** - Complete documentation for all tools with examples
+- **`senzing/reference/senzing_entity_specification.md`** - Master specification for Senzing JSON format (comprehensive reference)
+- **`senzing/prompts/senzing_mapping_assistant.md`** - AI assistant prompt to share with your AI agent for guided mapping
+- **`senzing/SENZING_TOOLS_REFERENCE.md`** - Complete documentation for all tools with examples
 
 **Tip:** Ask your AI agent to read these files for you! For example:
 - "Read the Senzing entity specification and explain the key concepts"
@@ -384,7 +384,7 @@ See the "For Workshop Participants" section above for the complete participant w
 - **During exercises:** Your AI agent can refer to the Senzing entity specification for you
 - **Validation errors:** Your AI agent can help fix JSON structure issues
 - **Quality issues:** Your AI agent can interpret the analyzer report and suggest fixes
-- **Solutions:** Available in `workshop/solutions/` - check with your instructor on appropriate timing
+- **Solutions:** Available in `solutions/` - check with your instructor on appropriate timing
 
 ## Additional Resources
 

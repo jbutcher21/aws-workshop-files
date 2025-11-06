@@ -33,7 +33,7 @@ account_status, account_balance, customer_tier
 ## Step 2: Review Senzing Entity Specification
 
 **Reference Materials:**
-- Location: `workshop/senzing/reference/senzing_entity_specification.md`
+- Location: `senzing/reference/senzing_entity_specification.md`
 - Key concepts to understand:
   - Entities (PERSON vs ORGANIZATION)
   - Features (NAME, ADDRESS, PHONE, etc.)
@@ -88,7 +88,7 @@ Please analyze the source schema and suggest a mapping strategy for:
 
 **User:** "please load the mapping assistant prompt from the senzing folder"
 
-**Assistant:** "Loaded: `workshop/senzing/prompts/senzing_mapping_assistant.md` - This is the Senzing Mapping Assistant v4 prompt that guides the 5-stage mapping workflow."
+**Assistant:** "Loaded: `senzing/prompts/senzing_mapping_assistant.md` - This is the Senzing Mapping Assistant v4 prompt that guides the 5-stage mapping workflow."
 
 **User:** "yes"
 
