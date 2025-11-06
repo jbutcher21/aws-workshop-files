@@ -354,7 +354,7 @@ class SzJsonAnalyzer:
         table_rows = [table_headers]
         for feature in sorted(self.feature_stats.keys(), key=lambda k: self.feature_stats[k]["order"]):
             row = ["" for x in range(len(table_headers))]
-            row[0] = "MAPPED"
+            row[0] = "FEATURES"
             row[1] = feature
             row[2] = self.feature_stats[feature]["count"]
             row[3] = round(self.feature_stats[feature]["count"] / self.record_count * 100.00, 2)
@@ -401,7 +401,7 @@ class SzJsonAnalyzer:
                     key=lambda k: self.feature_stats[feature]["attributes"][k]["order"],
                 ):
                     row = ["" for x in range(len(table_headers))]
-                    row[0] = "MAPPED"
+                    row[0] = "FEATURES"
                     row[1] = "  " + attribute
                     row[2] = self.feature_stats[feature]["attributes"][attribute]["count"]
                     row[3] = round(
@@ -427,7 +427,7 @@ class SzJsonAnalyzer:
         table_rows.append(["" for x in range(len(table_headers))])
         for attribute in sorted(self.unmapped_stats.keys()):
             row = ["" for x in range(len(table_headers))]
-            row[0] = "UNMAPPED"
+            row[0] = "PAYLOAD"
             row[1] = attribute
             row[2] = self.unmapped_stats[attribute]["count"]
             row[3] = round(self.unmapped_stats[attribute]["count"] / self.record_count * 100.00, 1)
@@ -509,8 +509,8 @@ def format_pretty_table(table_rows):
     table_object.junction_char = "\u253c"
 
     colors = {
-        "MAPPED": "\033[38;5;70m",
-        "UNMAPPED": "\033[38;5;178m",
+        "FEATURES": "\033[38;5;70m",
+        "PAYLOAD": "\033[38;5;178m",
         "ERROR": "\033[38;5;124m",
         "WARNING": "\033[38;5;202m",
         "INFO": "\033[38;5;39m",
@@ -535,7 +535,7 @@ def format_pretty_table(table_rows):
     table_object.field_names = [f"{colors['HEADER']}{x}{colors['RESET']}" for x in table_rows[0]]
     for orig_row in table_rows[1:]:
         row = orig_row.copy()  # so outer table not changed
-        if orig_row[0] == "MAPPED":
+        if orig_row[0] == "FEATURES":
             if row[1][0:1] == " ":
                 row[1] = f"{colors[row[0]]+colors['DIM']}{row[1]}{colors['RESET']}"
                 i = 2
@@ -611,6 +611,137 @@ def format_csv_table(table_rows):
     writer = csv.writer(output)
     writer.writerows(table_rows)
     return output.getvalue()
+
+
+# ----------------------------------------
+def format_markdown_table(table_rows):
+    """Format report as markdown with sections for better AI readability."""
+    if not table_rows or len(table_rows) < 2:
+        return "No report data available.\n"
+
+    lines = []
+    header = table_rows[0]
+
+    # Add title and summary
+    lines.append("# Senzing JSON Analysis Report")
+    lines.append("")
+
+    # Organize rows by category
+    mapped_rows = []
+    unmapped_rows = []
+    error_rows = []
+    warning_rows = []
+    info_rows = []
+
+    for row in table_rows[1:]:
+        if not row or not row[0]:  # Skip empty rows
+            continue
+        category = row[0].strip()
+        if category == "FEATURES":
+            mapped_rows.append(row)
+        elif category == "PAYLOAD":
+            unmapped_rows.append(row)
+        elif category == "ERROR":
+            error_rows.append(row)
+        elif category == "WARNING":
+            warning_rows.append(row)
+        elif category == "INFO":
+            info_rows.append(row)
+
+    # Helper function to create markdown table
+    def create_table(rows, is_message_table=False):
+        if not rows:
+            return []
+
+        table_lines = []
+
+        if is_message_table:
+            # Simplified table for ERROR/WARNING/INFO
+            # Columns: Attribute | Record Count | Record Percent | Affected Rows
+            table_lines.append("| Attribute | Record Count | Record Percent | Affected Rows |")
+            table_lines.append("|---|---|---|---|")
+
+            for row in rows:
+                # row[1] = Attribute
+                # row[2] = Record Count
+                # row[3] = Record Percent
+                # row[6:] = Top Value1-10 (extract row numbers)
+
+                attribute = str(row[1]) if len(row) > 1 else ""
+                record_count = str(row[2]) if len(row) > 2 else ""
+                record_percent = str(row[3]) if len(row) > 3 else ""
+
+                # Collect all row numbers from Top Value columns
+                affected_rows = []
+                for i in range(6, min(len(row), 16)):  # Columns 6-15 are Top Value1-10
+                    value = str(row[i]).strip()
+                    if value and value.startswith("row "):
+                        # Extract just the number
+                        row_num = value.replace("row ", "")
+                        if row_num:
+                            affected_rows.append(row_num)
+
+                affected_rows_str = ", ".join(affected_rows) if affected_rows else ""
+
+                table_lines.append(f"| {attribute} | {record_count} | {record_percent} | {affected_rows_str} |")
+        else:
+            # Full table for MAPPED/UNMAPPED
+            # Skip category column
+            table_lines.append("| " + " | ".join(header[1:]) + " |")
+            table_lines.append("|" + "|".join(["---" for _ in header[1:]]) + "|")
+
+            for row in rows:
+                # Skip category column
+                table_lines.append("| " + " | ".join(str(cell) for cell in row[1:]) + " |")
+
+        return table_lines
+
+    # Add MAPPED section (now "Feature Attributes")
+    if mapped_rows:
+        lines.append("## ✅ Feature Attributes")
+        lines.append("")
+        lines.append("**Senzing-recognized features used for entity resolution.**")
+        lines.append("")
+        lines.extend(create_table(mapped_rows))
+        lines.append("")
+
+    # Add UNMAPPED section (now "Payload Attributes")
+    if unmapped_rows:
+        lines.append("## ℹ️ Payload Attributes")
+        lines.append("")
+        lines.append("**Payload data stored in Senzing but not used for matching.**")
+        lines.append("")
+        lines.extend(create_table(unmapped_rows))
+        lines.append("")
+
+    # Add ERROR section
+    if error_rows:
+        lines.append("## ❌ Critical Errors")
+        lines.append("")
+        lines.append("**These issues MUST be fixed before loading data into Senzing.**")
+        lines.append("")
+        lines.extend(create_table(error_rows, is_message_table=True))
+        lines.append("")
+
+    # Add WARNING section
+    if warning_rows:
+        lines.append("## ⚠️ Warnings")
+        lines.append("")
+        lines.append("**Data quality issues that may affect matching performance.**")
+        lines.append("")
+        lines.extend(create_table(warning_rows, is_message_table=True))
+        lines.append("")
+
+    # Add INFO section
+    if info_rows:
+        lines.append("## ℹ️ Informational")
+        lines.append("")
+        lines.append("**Minor issues or missing desired attributes.**")
+        lines.append("")
+        lines.extend(create_table(info_rows, is_message_table=True))
+        lines.append("")
+
+    return "\n".join(lines)
 
 
 # ----------------------------------------
@@ -692,12 +823,20 @@ if __name__ == "__main__":
     print("\ncreating report ...\n")
     report_table = analyzer.get_report()
 
-    report_output = format_pretty_table(report_table) if prettytable else format_plain_table(report_table)
-    print_report(report_output)
-
-    # --write statistics file
+    # --write statistics file or display to terminal
     if args.output_file:
+        # Detect output format based on file extension
+        file_ext = os.path.splitext(args.output_file)[1].lower()
+
         with open(args.output_file, "w", encoding="utf-8") as outfile:
-            outfile.write(format_csv_table(report_table))
-        print(f"Report written to {args.output_file}\n")
+            if file_ext == ".md":
+                outfile.write(format_markdown_table(report_table))
+                print(f"Markdown report written to {args.output_file}\n")
+            else:
+                outfile.write(format_csv_table(report_table))
+                print(f"CSV report written to {args.output_file}\n")
+    else:
+        # Only display colorized output if no output file specified
+        report_output = format_pretty_table(report_table) if prettytable else format_plain_table(report_table)
+        print_report(report_output)
     sys.exit(0)

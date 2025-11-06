@@ -239,7 +239,7 @@ Solutions serve as:
 
 ### Environment Variables
 
-If using Senzing core tools (sz_file_loader, sz_command, sz_snapshot):
+If using Senzing core tools (sz_file_loader, sz_snapshot):
 ```bash
 export SENZING_ROOT=/opt/senzing/er
 ```

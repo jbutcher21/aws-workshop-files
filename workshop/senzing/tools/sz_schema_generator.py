@@ -12,7 +12,10 @@ import xml.etree.ElementTree as ET  # Add import for XML parsing
 from datetime import date, datetime, timedelta
 from typing import Iterable, Iterator
 
-import numpy as np
+try:
+    import numpy as np
+except:
+    np = False
 
 try:
     import pandas as pd
@@ -594,23 +597,29 @@ class FileAnalyzer:
         """Extract values from nested attribute path like 'properties.type.type'"""
         parts = attr_path.split('.')
         current = obj
-        
+
         for part in parts:
             if isinstance(current, dict) and part in current:
                 current = current[part]
             elif isinstance(current, list) and current:
-                # Handle list of dicts - look for the part in each dict
-                new_values = []
-                for item in current:
-                    if isinstance(item, dict) and part in item:
-                        new_values.append(item[part])
-                if new_values:
-                    current = new_values
+                # Check if list contains dicts or scalars
+                if isinstance(current[0], dict):
+                    # Handle list of dicts - look for the part in each dict
+                    new_values = []
+                    for item in current:
+                        if isinstance(item, dict) and part in item:
+                            new_values.append(item[part])
+                    if new_values:
+                        current = new_values
+                    else:
+                        return []
                 else:
+                    # List of scalars (strings, numbers, etc.) - can't extract further
+                    # If we still have more parts to navigate, return empty
                     return []
             else:
                 return []
-        
+
         # Handle different types of values
         if isinstance(current, list):
             return current
@@ -638,30 +647,38 @@ class FileAnalyzer:
             for key, value in obj.items():
                 if key and key != self.group_by_attr:  # Skip the grouping attribute itself
                     self.update_node_for_group(group_value, prior_key, key, value)
-                    if isinstance(value, (dict, list, np.ndarray)):
+                    # Check for nested structures (include numpy arrays if available)
+                    check_types = (dict, list, np.ndarray) if np else (dict, list)
+                    if isinstance(value, check_types):
                         self.iterate_obj_for_group(group_value, f"{prior_key}.{key}", value)
 
         elif isinstance(obj, list):
             for item in obj:
-                if isinstance(item, (dict, list, np.ndarray)):
+                check_types = (dict, list, np.ndarray) if np else (dict, list)
+                if isinstance(item, check_types):
                     self.iterate_obj_for_group(group_value, prior_key, item)
                 else:
-                    self.update_node_for_group(group_value, prior_key, prior_key.split(".")[-1], item)
+                    # For lists of scalars, don't duplicate the key
+                    self.update_node_for_group(group_value, prior_key, "", item)
 
     def iterate_obj(self, prior_key, obj):
         if isinstance(obj, dict):
             for key, value in obj.items():
                 if key:  # bad csvs have blank field names!
                     self.update_node(prior_key, key, value)
-                    if isinstance(value, (dict, list, np.ndarray)):
+                    # Check for nested structures (include numpy arrays if available)
+                    check_types = (dict, list, np.ndarray) if np else (dict, list)
+                    if isinstance(value, check_types):
                         self.iterate_obj(f"{prior_key}.{key}", value)
 
         elif isinstance(obj, list):
             for item in obj:
-                if isinstance(item, (dict, list, np.ndarray)):
+                check_types = (dict, list, np.ndarray) if np else (dict, list)
+                if isinstance(item, check_types):
                     self.iterate_obj(prior_key, item)
                 else:
-                    self.update_node(prior_key, prior_key.split(".")[-1], item)
+                    # For lists of scalars, don't duplicate the key
+                    self.update_node(prior_key, "", item)
 
     def update_node_for_group(self, group_value, prior_key, key, value):
         """Update node for a specific group"""
@@ -701,7 +718,7 @@ class FileAnalyzer:
 
                 if isinstance(value, (dict, list)):
                     value = f"{len(value)} items"
-                elif isinstance(value, np.ndarray):
+                elif np and isinstance(value, np.ndarray):
                     value = f"array({value.shape}) items"
 
                 # Ensure value is always a string for dictionary key
@@ -751,7 +768,7 @@ class FileAnalyzer:
 
                 if isinstance(value, (dict, list)):
                     value = f"{len(value)} items"
-                elif isinstance(value, np.ndarray):
+                elif np and isinstance(value, np.ndarray):
                     value = f"array({value.shape}) items"
 
                 # Ensure value is always a string for dictionary key
