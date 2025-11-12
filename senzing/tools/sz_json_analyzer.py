@@ -23,18 +23,16 @@ def get_config_data(config_file_name):
     config_message = "Access to Senzing instance needed to get current configuration data!"
     config_data = None
     try:
-        from senzing import G2Config, G2ConfigMgr
+        from senzing_core import SzAbstractFactoryCore
 
         iniParams = os.getenv("SENZING_ENGINE_CONFIGURATION_JSON")
 
-        g2ConfigMgr = G2ConfigMgr()
-        g2ConfigMgr.init("pyG2ConfigMgr", iniParams, False)
-        defaultConfigID = bytearray()
-        g2ConfigMgr.getDefaultConfigID(defaultConfigID)
-        defaultConfigDoc = bytearray()
-        g2ConfigMgr.getConfig(defaultConfigID, defaultConfigDoc)
-        cfgData = json.loads(defaultConfigDoc.decode())
-        g2ConfigMgr.destroy()
+        sz_factory = SzAbstractFactoryCore("sz_json_analyzer", iniParams)
+        sz_configmgr = sz_factory.create_configmanager()
+        defaultConfigID = sz_configmgr.get_default_config_id()
+        sz_config = sz_configmgr.create_config_from_config_id(defaultConfigID)
+        defaultConfigDoc = sz_config.export()
+        cfgData = json.loads(defaultConfigDoc)
         config_data = {"G2_CONFIG": {}}
         config_data["G2_CONFIG"]["CFG_DSRC"] = cfgData["G2_CONFIG"]["CFG_DSRC"]
         config_data["G2_CONFIG"]["CFG_ATTR"] = cfgData["G2_CONFIG"]["CFG_ATTR"]

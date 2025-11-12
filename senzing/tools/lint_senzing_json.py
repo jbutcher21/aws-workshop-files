@@ -18,6 +18,14 @@ USAGE EXAMPLES:
   # Lint all JSON/JSONL files in a directory (recursive)
   python3 lint_senzing_json.py /path/to/directory
 
+  # Read from stdin (pipe or redirect)
+  cat records.jsonl | python3 lint_senzing_json.py
+  python3 lint_senzing_json.py < records.json
+  echo '{"DATA_SOURCE":"TEST","RECORD_ID":"1","FEATURES":[]}' | python3 lint_senzing_json.py
+
+  # Explicit stdin with "-"
+  python3 lint_senzing_json.py -
+
   # Show this help
   python3 lint_senzing_json.py --help
 
@@ -30,13 +38,13 @@ VALIDATION RULES:
 - RECORD_TYPE is recommended to prevent cross-type resolution
 
 EXIT CODES:
-  0 = All files passed validation
-  1 = One or more files had errors
-  2 = Invalid usage (missing arguments)
+  0 = All records passed validation
+  1 = One or more records had errors
+  2 = Invalid usage (no input or invalid JSON)
 
 FOR AI AGENTS:
-When generating Senzing JSON, save records to a file then run:
-  python3 tools/lint_senzing_json.py <filename>
+When generating Senzing JSON, pipe it directly to the linter:
+  echo '{"DATA_SOURCE":"TEST",...}' | python3 tools/lint_senzing_json.py
 The linter will report any validation errors that need fixing.
 """
 
@@ -339,6 +347,37 @@ def load_file(path: str) -> List[Tuple[Any, str]]:
     return items
 
 
+def load_stdin() -> List[Tuple[Any, str]]:
+    """Load JSON/JSONL from stdin and return list of (object, location) tuples."""
+    items: List[Tuple[Any, str]] = []
+
+    # Read all input
+    input_text = sys.stdin.read().strip()
+
+    if not input_text:
+        return items
+
+    # Try as single JSON object first (handles multi-line formatted JSON)
+    try:
+        items.append((json.loads(input_text), "stdin"))
+        return items
+    except json.JSONDecodeError:
+        pass
+
+    # If that fails, try as JSONL (one JSON per line)
+    lines = input_text.split('\n')
+    for i, line in enumerate(lines, start=1):
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            items.append((json.loads(line), f"stdin:{i}"))
+        except json.JSONDecodeError as e:
+            items.append((None, f"stdin:{i} (invalid JSON: {e})"))
+
+    return items
+
+
 def self_test() -> int:
     """Run self-test with minimal valid and invalid Senzing JSON records."""
     print("Running linter self-test...")
@@ -383,21 +422,45 @@ def self_test() -> int:
 
 def main(argv: List[str]) -> int:
     """Main entry point for the linter CLI."""
-    if len(argv) < 2:
-        print(__doc__.strip())
-        return 2
+    # Handle flags first
+    if len(argv) >= 2:
+        target = argv[1]
+        if target in ("--help", "-h"):
+            print(__doc__.strip())
+            return 0
+        if target == "--self-test":
+            return self_test()
 
-    target = argv[1]
+    # Determine if using stdin
+    use_stdin = len(argv) < 2 or (len(argv) >= 2 and argv[1] == "-")
 
-    # Handle --help flag
-    if target in ("--help", "-h"):
-        print(__doc__.strip())
+    if use_stdin:
+        # Read from stdin
+        items = load_stdin()
+        if not items:
+            print("ERROR: No valid JSON found in stdin", file=sys.stderr)
+            return 2
+
+        total_errors = 0
+        for obj, where in items:
+            if obj is None:
+                print(f"ERROR: {where}")
+                total_errors += 1
+                continue
+            errs = lint_record(obj, where, strict=True)
+            if errs:
+                total_errors += len(errs)
+                for e in errs:
+                    print(f"ERROR: {e}")
+
+        if total_errors:
+            print(f"\nFAIL: {total_errors} error(s) found", file=sys.stderr)
+            return 1
+        print("OK: All records passed")
         return 0
 
-    # Handle --self-test flag
-    if target == "--self-test":
-        return self_test()
-
+    # File/directory mode
+    target = argv[1]
     strict = True
     if len(argv) >= 3 and argv[2] == "--no-strict":
         strict = False

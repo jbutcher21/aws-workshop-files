@@ -185,9 +185,19 @@ mapping_set = set(mapping_table_fields)
 if mapping_set not in source_set: HALT → show offending
 ```
 
+**Gate:**
+
+⚠️ CONFIRM:
+Any questions or clarification needed?
+
+If not, the next step is to generate Senzing JSON and validate it
+Type 'YES' if ready.
+
+WAIT for 'YES'. 
+
 **4.6 Generate JSON:** Display complete sample inline (code block). Include ALL mapped items: features (identifiers, names, addresses, phones, dates, relationships, etc.) AND payload attributes. If schema/data shows meaningful variations (optional fields populated/missing, different identifier types, with/without relationships, multi-value vs single-value features), offer to show 2-3 additional examples. Do NOT provide download links.
 
-**4.7 Lint Sample:** Save sample JSON to a temp file and run `python3 tools/lint_senzing_json.py <file>` to validate structure. If FAIL: fix → regen → re-lint → PASS. Then ask approval. Note: This linter is only for validating samples during development.
+**4.7 Lint Sample:** Pipe sample JSON directly to the linter to validate structure: echo '{"DATA_SOURCE":"TEST",...}' | python3 tools/lint_senzing_json.py. If FAIL (exit code 1): fix → regen → re-lint → PASS. Then ask approval.
 
 **4.8 Iterate:** Approve/Modify/Add/Remove.
 
