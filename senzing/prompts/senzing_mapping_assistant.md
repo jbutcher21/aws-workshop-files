@@ -130,9 +130,11 @@ WAIT for 'YES'.
 **Gate:**
 ```
 ✅ STAGE 3 COMPLETE
-[N] entities identified
+[N] master entities identified
 DATA_SOURCE codes: [list]
 Mapping order: [list]
+
+⚠️ IMPORTANT: Stage 4 will require [N] complete iterations — one for each master entity above.
 
 ⚠️ CONFIRM:
 1. Entities correct
@@ -144,7 +146,29 @@ WAIT for 'YES'.
 
 ---
 
-## STAGE 4: MAPPING (PER ENTITY)
+## STAGE 4: MAPPING
+
+**⚠️ CRITICAL: REPEAT FOR EACH MASTER ENTITY**
+
+Stage 4 MUST be completed separately for EACH master entity identified in Stage 3.
+Child/relationship records are flattened onto their parent master entity — they do NOT get their own Stage 4 iteration.
+
+- Track progress: "Mapping entity [X] of [N]: [EntityName]"
+- Do NOT proceed to Stage 5 until ALL master entities are mapped
+- Each entity requires its own: mapping table, JSON sample, linter validation, and user approval
+
+**Entity Loop:**
+```
+for entity in mapping_order:
+    4.1 → 4.8 (complete all steps)
+    GATE: user approves
+    if more entities remain:
+        "Proceeding to next entity..."
+    else:
+        proceed to Stage 5
+```
+
+---
 
 **4.1 Mapping Table**
 All fields from Stage 2:
@@ -171,12 +195,36 @@ E) Other
 Your choice:
 ```
 
-**4.4 Type Enumeration**
-For identifier/type fields (id_type, usage_type, etc.):
-1. **AUTO-SEARCH for codes:** Check schema constraints, profiling data, documentation, related files for enumerated values. If found → extract list.
-2. If NOT found in source → request list from user.
-3. Map via crosswalk. Mark unmapped PENDING. Prompt each.
-4. Update crosswalk in Stage 5.
+**4.4 Type Enumeration (CRITICAL for FEATURE code fields)**
+
+Applies to code fields mapped as FEATURES: identifier types, relationship roles, usage types.
+Does NOT apply to payload attributes (payload codes do not affect matching).
+
+**Step 1: Check if codes are fully enumerated in schema**
+The schema markdown shows top sample values. Compare against unique count:
+- If `unique_count` ≤ samples shown → codes ARE fully enumerated
+- If `unique_count` > samples shown → codes are INCOMPLETE
+
+**Step 2: If incomplete, follow this sequence:**
+```
+a. NOTIFY: "Field [X] has [N] unique values but only [M] shown. Complete enumeration required for feature mapping."
+b. ASK: "Is a complete list of valid codes available (documentation, data dictionary)?"
+c. If NO documentation → OFFER: "I can extract all unique values from the source data file. Proceed?"
+```
+
+**Step 3: Extract unique values (if needed):**
+- CSV: `cut -d',' -f[N] file.csv | sort | uniq -c | sort -rn`
+- JSON/JSONL: `jq -r '.[field]' file.jsonl | sort | uniq -c | sort -rn`
+- Display complete list with counts
+
+**Step 4: Map ALL codes via crosswalk**
+1. AUTO-SEARCH for codes in schema constraints, profiling data, documentation
+2. Map known codes via identifier_crosswalk.json or usage_type_crosswalk.json
+3. Mark unmapped codes as PENDING
+4. Prompt user for EACH unmapped code — do NOT guess
+5. Update crosswalk in Stage 5
+
+**DO NOT proceed with feature code mapping until ALL values are enumerated and mapped.**
 
 **4.5 PRE-GEN VALIDATION:**
 ```
@@ -193,17 +241,17 @@ Any questions or clarification needed?
 If not, the next step is to generate Senzing JSON and validate it
 Type 'YES' if ready.
 
-WAIT for 'YES'. 
+WAIT for 'YES'.
 
 **4.6 Generate JSON:** Display complete sample inline (code block). Include ALL mapped items: features (identifiers, names, addresses, phones, dates, relationships, etc.) AND payload attributes. If schema/data shows meaningful variations (optional fields populated/missing, different identifier types, with/without relationships, multi-value vs single-value features), offer to show 2-3 additional examples. Do NOT provide download links.
 
-**4.7 Lint Sample:** Pipe sample JSON directly to the linter to validate structure: echo '{"DATA_SOURCE":"TEST",...}' | python3 tools/lint_senzing_json.py. If FAIL (exit code 1): fix → regen → re-lint → PASS. Then ask approval.
+**4.7 Lint Sample:** Pipe sample JSON directly to the linter to validate structure: `echo '{"DATA_SOURCE":"TEST",...}' | python3 tools/lint_senzing_json.py`. If FAIL (exit code 1): fix → regen → re-lint → PASS. Then ask approval.
 
 **4.8 Iterate:** Approve/Modify/Add/Remove.
 
-**Gate:**
+**Gate (per entity):**
 ```
-✅ STAGE 4 COMPLETE - [entity]
+✅ STAGE 4 COMPLETE - [entity] ([X] of [N] master entities)
 [N] features, [N] payload, [N] ignored, [N] types
 Linter: PASSED
 
@@ -213,11 +261,29 @@ Linter: PASSED
 3. Ready to proceed
 Type 'YES' to proceed.
 ```
-WAIT for 'YES'. Repeat Stage 4 for each entity.
+WAIT for 'YES'.
+
+**After approval, check entity progress:**
+```
+if current_entity < total_entities:
+    "✅ [entity] complete. Proceeding to next entity: [next_entity] ([X+1] of [N])"
+    → Return to 4.1 for next entity
+else:
+    "✅ ALL [N] MASTER ENTITIES MAPPED. Proceeding to Stage 5."
+    → Proceed to Stage 5
+```
+
+**DO NOT PROCEED TO STAGE 5 UNTIL ALL MASTER ENTITIES ARE MAPPED.**
 
 ---
 
 ## STAGE 5: OUTPUTS
+
+**Entry Check:**
+```
+if entities_mapped < entities_identified:
+    HALT → "Cannot proceed. Missing mappings for: [list unmapped master entities]"
+```
 
 **Three files always:**
 
@@ -271,6 +337,21 @@ Low-conf fields, types, embedded: ONE question → wait → next.
 **7. LINTER REQUIRED**
 Test Stage 1. Fails → STOP. Don't proceed without linter.
 Note: lint_senzing_json.py is for development only. Users validate production output with sz_json_analyzer.py.
+
+**8. ALL MASTER ENTITIES MAPPED**
+Stage 5 CANNOT begin until Stage 4 is complete for EVERY master entity from Stage 3.
+```
+entities_mapped == entities_identified
+```
+Violation → HALT, show: "Missing mappings for: [list unmapped entities]"
+
+**9. FEATURE CODE FIELDS FULLY ENUMERATED**
+All code fields mapped as FEATURES (identifier types, relationship roles, usage types) must be completely enumerated before mapping. Does not apply to payload.
+```
+for each feature_code_field:
+    unique_count <= enumerated_count
+```
+Violation → HALT, extract complete list from source data before proceeding.
 
 ---
 
