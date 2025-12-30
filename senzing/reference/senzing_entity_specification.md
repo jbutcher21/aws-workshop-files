@@ -25,7 +25,7 @@ Entity resolution works best when you have a name and as many other features as 
 | Feature | Description | Importance | Guidance |
 | --- | --- | --- | --- |
 | RECORD_TYPE | (e.g., PERSON, ORGANIZATION) | High | Include when known to prevent cross‑type resolution; omit if unknown. Use standardized kinds (PERSON, ORGANIZATION). Often used to determine icon/shape in graphs. |
-| NAME (person) | Personal names | High | Look for: legal name, aliases/AKAs, maiden/former names, nickname/preferred name, transliterations/alternate scripts. Prefer parsed components when available (FIRST, MIDDLE, LAST, SUFFIX). |
+| NAME (person) | Personal names | High | Look for: legal name, aliases/AKAs, maiden/former names, nickname/preferred name, transliterations/alternate scripts. Use parsed components (FIRST, MIDDLE, LAST, SUFFIX) only when the source provides separate fields; do NOT parse a single name field—use NAME_FULL instead. |
 | NAME (organization) | Organization legal or trade name | High | Look for: legal/registered name, trade/DBA, former names, short/brand names, transliterations/alternate scripts. |
 | DOB | Person date of birth | High | Full date preferred; partial values accepted. |
 | ADDRESS (person) | Postal/physical address | High | Look for: residential/home, mailing/remittance, previous/old; prefer parsed components when available (LINE1/2, CITY, STATE/PROVINCE, POSTAL_CODE, COUNTRY). |
@@ -512,7 +512,7 @@ Importance: High
 | NAME_FULL    | Robert J Smith, Trust   | Single-field name when type (person vs org) is unknown or only a full name is provided. |
 
 Rules
-- Prefer parsed person names (NAME_FIRST/NAME_LAST/...) when available; use NAME_ORG for organizations; use NAME_FULL only when the type is unknown or only a single field exists.
+- Use parsed person names (NAME_FIRST/NAME_LAST/...) only when the source provides separate fields; do NOT attempt to parse a single name field—use NAME_FULL for single-field names (even if they appear parseable, like "Smith, Robert"). Use NAME_ORG for organizations.
 - Keep each NAME feature object internally consistent: do not mix NAME_FULL with parsed name fields in the same object; do not mix NAME_ORG with parsed person fields in the same object.
 - Use NAME_TYPE only when provided by the source (e.g., PRIMARY, AKA, DBA).
 - When multiple names exist, NAME_TYPE=PRIMARY is special: it determines the best display name for the resolved entity (prefer PRIMARY over AKA).
