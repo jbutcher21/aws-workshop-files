@@ -121,11 +121,21 @@ WAIT for 'YES'.
 
 ## STAGE 3: PLANNING
 
-1. Identify master entities (per spec "Source Schema Types")
+1. **Identify entities to map** (per spec "Source Schema Types"):
+   - **Multiple schemas:** Separate into masters (persons/orgs) and children (addresses, identifiers, relationships, etc.). Masters have unique primary keys; children have zero or more records per master key (e.g., customer schema keyed by customer_id; address/identifier schemas with customer_id as foreign key).
+   - **Single schema:** Identify if one or more entities per row
+     - One entity: e.g., customer list (each row is a single customer)
+     - Multiple entities: e.g., contact + employer, transaction between parties
 2. **DATA_SOURCE codes:** Determine DATA_SOURCE value for each entity. ASK user to confirm.
 3. **Child/list handling:** Always flatten as feature arrays on master entity. Do NOT create separate child records.
 4. Embedded entities - ASK user how to handle
 5. Mapping order
+6. **Transactional data handling:**
+   When source data represents transactions between parties (payments, trades, shipments, etc.):
+   - **DO** extract and resolve the entities (payers, beneficiaries, buyers, sellers, etc.)
+   - **DO NOT** create relationships between transacting parties in Senzing
+   - Senzing's role is to resolve WHO the entities are, not to analyze transaction patterns
+   - After resolution, publish entity IDs back to the transaction database for network/temporal analysis (when, how often, amounts, etc.)
 
 **Gate:**
 ```
