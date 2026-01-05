@@ -181,6 +181,9 @@ for entity in mapping_order:
 
 ---
 
+**4.0 Spec Review (REQUIRED)**
+Re-read senzing_entity_specification.md before generating the mapping table. All mapping decisions must align with spec guidance for the entity type(s) being mapped.
+
 **4.1 Mapping Table**
 All fields from Stage 2:
 ```
@@ -188,6 +191,17 @@ All fields from Stage 2:
 ```
 Disposition: Feature/Payload/Ignore
 Confidence: 1.0=certain, 0.9-0.99=high, 0.7-0.89=medium, <0.7=low
+
+**Child table mapping:** If this master has child tables (identified in Stage 3), show how each child flattens onto the master:
+```
+MASTER: [EntityName] ([N] records)
+| Field | Disposition | Feature/Payload | Instructions | Ref | Confidence |
+[master fields]
+
+CHILD: [ChildName] → flattens to [EntityName] (via [foreign_key])
+| Field | Disposition | Feature/Payload | Instructions | Ref | Confidence |
+[child fields that become features/payload on master]
+```
 
 **RECORD_ID requirement:** Every entity MUST have RECORD_ID. If source has unique key → map it. If NO unique key → derive as SHA1 hex hash of normalized identifying features (fixed order, trimmed, case-folded). Example: `hashlib.sha1(f"{name}|{addr}".encode()).hexdigest()`. Document logic.
 
