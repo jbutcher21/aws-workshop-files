@@ -126,6 +126,7 @@ WAIT for 'YES'.
    - **Single schema:** Identify if one or more entities per row
      - One entity: e.g., customer list (each row is a single customer)
      - Multiple entities: e.g., contact + employer, transaction between parties
+     - **Note:** A type discriminator (person/org flag) sets RECORD_TYPE in output—it does NOT mean multiple entities to map
 2. **DATA_SOURCE codes:** Determine DATA_SOURCE value for each entity. ASK user to confirm.
 3. **Child/list handling:** Always flatten as feature arrays on master entity. Do NOT create separate child records.
 4. Embedded entities - ASK user how to handle
@@ -189,6 +190,8 @@ Disposition: Feature/Payload/Ignore
 Confidence: 1.0=certain, 0.9-0.99=high, 0.7-0.89=medium, <0.7=low
 
 **RECORD_ID requirement:** Every entity MUST have RECORD_ID. If source has unique key → map it. If NO unique key → derive as SHA1 hex hash of normalized identifying features (fixed order, trimmed, case-folded). Example: `hashlib.sha1(f"{name}|{addr}".encode()).hexdigest()`. Document logic.
+
+**RECORD_TYPE variations:** When RECORD_TYPE varies (PERSON/ORGANIZATION), consult the spec for type-specific mapping guidance (usage types, attribute applicability, etc.).
 
 **4.2 High-Confidence**
 Show ≥0.80, ask approval.
