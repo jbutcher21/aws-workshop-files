@@ -207,8 +207,6 @@ CHILD: [ChildName] → flattens to [EntityName] (via [foreign_key])
 
 **RECORD_TYPE variations:** When RECORD_TYPE varies (PERSON/ORGANIZATION), consult the spec for type-specific mapping guidance (usage types, attribute applicability, etc.).
 
-**Feature name collisions:** When a source field name matches a Senzing feature attribute name, verify the source field's meaning matches the feature's definition in the spec. If it matches → map as that feature. If it differs → rename to a materially different payload attribute name (e.g., registration_date → signup_date, not ACCOUNT_REGISTRATION_DATE).
-
 **4.2 High-Confidence**
 Show ≥0.80, ask approval.
 

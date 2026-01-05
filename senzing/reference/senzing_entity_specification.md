@@ -78,6 +78,9 @@ Performance note:
 - If you do decide to include them, keep them minimal and only include what helps a human understand matches or an algorithm to triage them.
 - You may decide to map a few during a proof of concept while you are analyzing matches and then remove them when you go to production.
 
+Feature name collisions:
+- When a source field name matches a Senzing feature attribute name, verify the source field's meaning matches the feature's definition. If it matches → map as that feature. If it differs → rename to a materially different payload attribute name (e.g., source field "registration_date" that means account signup date should become "signup_date", not "ACCOUNT_REGISTRATION_DATE" which still contains the reserved name).
+
 # Recommended JSON Schema
 
 In prior versions we allowed a flat JSON structure with a separate sub-list for each feature that had multiple values. While we still support that, we now recommend the following JSON schema that has just one list for all features. It is much cleaner, and if you standardize on it, you can write a single parser to extract values for downstream processes if needed.

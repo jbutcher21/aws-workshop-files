@@ -196,6 +196,16 @@ def lint_record(doc: Any, where: str, *, strict: bool = True) -> List[str]:
                 f"{where}: Feature attribute '{k}' must be inside FEATURES array, not at root level"
             )
             continue
+        # Check for feature name embedded in payload attribute (e.g., ACCOUNT_REGISTRATION_DATE contains REGISTRATION_DATE)
+        for reserved in KEY_TO_FAMILY.keys():
+            if reserved in k and k != reserved:
+                # Check for prefix_ or _suffix patterns
+                if k.startswith(reserved + "_") or k.endswith("_" + reserved) or ("_" + reserved + "_") in k:
+                    errors.append(
+                        f"{where}: Payload attribute '{k}' contains reserved feature name '{reserved}'; "
+                        f"rename to something materially different (e.g., use 'signup_date' not 'ACCOUNT_REGISTRATION_DATE')"
+                    )
+                    break
         if not is_scalar(v):
             errors.append(
                 f"{where}: Root attribute '{k}' must be a scalar (string/number/boolean/null); no objects/arrays at root"
