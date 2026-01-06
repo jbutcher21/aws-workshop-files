@@ -108,5 +108,4 @@ Key rules:
 
 - `senzing/reference/senzing_entity_specification.md` - Complete Senzing JSON specification
 - `senzing/reference/identifier_crosswalk.json` - Identifier type mappings (SSN, PASSPORT, etc.)
-- `senzing/reference/usage_type_crosswalk.json` - Usage type mappings (HOME, BUSINESS, etc.)
 - `senzing/SENZING_TOOLS_REFERENCE.md` - Complete tool documentation with examples

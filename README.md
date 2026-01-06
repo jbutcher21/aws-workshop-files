@@ -113,7 +113,6 @@ In this workshop, you'll learn to transform source data into Senzing JSON format
 │   │   ├── senzing_entity_specification.md # Master specification
 │   │   ├── senzing_mapping_examples.md     # Mapping patterns
 │   │   ├── identifier_crosswalk.json       # Identifier type mappings
-│   │   ├── usage_type_crosswalk.json       # Usage type mappings
 │   │   └── images/                         # Specification diagrams
 │   ├── tools/                        # Python utilities (stdlib only)
 │   │   ├── sz_schema_generator.py    # Generate schema from source data
@@ -164,9 +163,6 @@ In this workshop, you'll learn to transform source data into Senzing JSON format
 
 **identifier_crosswalk.json** - Standard identifier type mappings
 - Maps common codes to Senzing features (SSN, PASSPORT, NATIONAL_ID, TAX_ID, etc.)
-
-**usage_type_crosswalk.json** - Standard usage type mappings
-- Maps common codes (HOME, BUSINESS, MOBILE, etc.)
 
 ### Tools (`senzing/tools/`)
 
