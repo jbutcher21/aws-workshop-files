@@ -260,6 +260,35 @@ mapping_set = set(mapping_table_fields)
 if mapping_set not in source_set: HALT → show offending
 ```
 
+**4.5.1 CROSSWALK COMPLETION CHECKLIST (REQUIRED)**
+
+Before generating JSON, enumerate ALL crosswalk mappings used:
+
+**Identifier Types** (from identifier_crosswalk.json):
+```
+Source Value → Senzing ID_TYPE
+[ ] _______________ → _______________
+[ ] _______________ → _______________
+(list ALL identifier type mappings)
+```
+
+**Usage Types** (from usage_type_crosswalk.json):
+```
+Source Value → Senzing USAGE_TYPE
+[ ] _______________ → _______________
+[ ] _______________ → _______________
+(list ALL usage type mappings, e.g., HOME, BUSINESS, MOBILE)
+```
+
+**Relationship Types** (if applicable):
+```
+Source Value → REL_ANCHOR_DOMAIN/REL_POINTER_DOMAIN
+[ ] _______________ → _______________
+(list ALL relationship role mappings)
+```
+
+⚠️ DO NOT proceed to 4.6 until this checklist is complete and shown to user.
+
 **Gate:**
 
 ⚠️ CONFIRM:
