@@ -6,8 +6,6 @@ The process of mapping is taking a source field name, like CustomerName, and tra
 
 # Key Terms
 
-![Diagram: Entity → Features → Attributes](images/ges-image1-key_terms.jpg "An Entity has Features; Features have Attributes")
-
 ## Entities, Features and Attributes:
 - **Entity** — A real-world subject, primarily a PERSON or an ORGANIZATION, described by one record.
 - **Feature** — A set of related attributes about the entity (e.g., NAME, ADDRESS, PHONE).
@@ -16,7 +14,6 @@ The process of mapping is taking a source field name, like CustomerName, and tra
 ## Usage types and payload (optional attributes)
 - **Usage Type** — A short label that distinguishes multiple instances of the same feature on one entity (e.g., HOME vs MAILING address, MOBILE vs HOME phone, PRIMARY vs ALIAS name). It helps explain “which one it is” when there are several. 
 - **Payload Attributes** — These are attributes that are not used for matching, but can be helpful in understanding matches or making quick decisions. (e.g., STATUS: Active|Inactive, RISK_CATEGORY, INDUSTRY_CODE)
-
 
 # What Features to Map
 
@@ -202,11 +199,9 @@ Schema Validation Rules
   - Optional root level attributes (Payload Attributes)
     - Must not be a registered feature attribute
     - Must be a scalar object (string, number, boolean), Not an array or nested object
-  - Only registered feature attributes may appear inside feature objects. See “Registered Feature Attributes” below for the complete list and guidance.
-
+  - Only registered feature attributes may appear inside feature objects. See "Registered Feature Attributes" below for the complete list and guidance.
 
 *Note: If exporting Senzing JSON records to a file its best to flatten them to create an easy to consume JSONL file.*
-
 
 # Source Schema Types
 
@@ -234,7 +229,6 @@ Sources vary — CSV/TSV and relational tables, JSON/JSONL, XML, Parquet, and gr
 - For records that reference entities without unique keys (e.g., sender and receiver on transactions), extract identifying attributes and compute a deterministic RECORD_ID as a hash of normalized values. Stamp this ID on the source record before mapping to Senzing, and track these IDs on the source side as well.
 - For records that have features that clearly do not belong to the primary entity (e.g., employer name and address on a contact list, reference name and phone number on a job application), consider creating a second entity related to the primary entity.
 - Use a stable normalization recipe (fixed fields and order; trim/collapse whitespace; case‑fold; normalize punctuation/diacritics) before hashing.
-
 
 # General mapping guidance
 
@@ -341,9 +335,6 @@ Notes
 
 # Disclosed Relationship Mapping Guidance
 
-Diagram
-![Relationship mapping: anchor and pointers](images/ges-image3-relationship.png)
-
 What it is
 - Disclosed relationships connect source records (masters), not features.
 - Common pairs and examples:
@@ -391,70 +382,6 @@ Cardinality and integrity
 - One relationship → one `REL_POINTER` object (multiple relationships → multiple objects).
 - Validate that every `REL_POINTER (DOMAIN, KEY)` resolves to a record that has (or will have) a matching `REL_ANCHOR`.
 
-Examples
-- EMPLOYED_BY (Person → Organization)
-```json
-{
-  "DATA_SOURCE": "CUSTOMERS",
-  "RECORD_ID": "P1001",
-  "FEATURES": [
-    { "REL_POINTER_DOMAIN": "CUSTOMERS", "REL_POINTER_KEY": "ORG1001", "REL_POINTER_ROLE": "EMPLOYED_BY" }
-  ]
-}
-```
-```json
-{
-  "DATA_SOURCE": "CUSTOMERS",
-  "RECORD_ID": "ORG1001",
-  "FEATURES": [
-    { "REL_ANCHOR_DOMAIN": "CUSTOMERS", "REL_ANCHOR_KEY": "ORG1001" }
-  ]
-}
-```
-
-- BRANCH_OF (Branch Org → Parent Org)
-```json
-{
-  "DATA_SOURCE": "CUSTOMERS",
-  "RECORD_ID": "ORG2001",
-  "FEATURES": [
-    { "REL_POINTER_DOMAIN": "CUSTOMERS", "REL_POINTER_KEY": "ORG1001", "REL_POINTER_ROLE": "BRANCH_OF" }
-  ]
-}
-```
-```json
-{
-  "DATA_SOURCE": "CUSTOMERS",
-  "RECORD_ID": "ORG1001",
-  "FEATURES": [
-    { "REL_ANCHOR_DOMAIN": "CUSTOMERS", "REL_ANCHOR_KEY": "ORG1001" }
-  ]
-}
-```
-
-- SON_OF / FATHER_OF (reciprocal pointers when provided)
-```json
-{
-  "DATA_SOURCE": "CUSTOMERS",
-  "RECORD_ID": "PER1001",
-  "FEATURES": [
-    { "REL_ANCHOR_DOMAIN": "CUSTOMERS", "REL_ANCHOR_KEY": "PER1001" },
-    { "REL_POINTER_DOMAIN": "CUSTOMERS", "REL_POINTER_KEY": "PER1002", "REL_POINTER_ROLE": "SON_OF" }
-  ]
-}
-```
-```json
-{
-  "DATA_SOURCE": "CUSTOMERS",
-  "RECORD_ID": "PER1002",
-  "FEATURES": [
-    { "REL_ANCHOR_DOMAIN": "CUSTOMERS", "REL_ANCHOR_KEY": "PER1002" },
-    { "REL_POINTER_DOMAIN": "CUSTOMERS", "REL_POINTER_KEY": "PER1001", "REL_POINTER_ROLE": "FATHER_OF" }
-  ]
-}
-```
-Note: Each target record should also carry a single `REL_ANCHOR` (see pattern above).
-
 See also
 - Full field definitions and examples: Feature: `REL_ANCHOR` and Feature: `REL_POINTER` later in this spec.
 
@@ -498,7 +425,6 @@ Tips for adding RECORD_TYPEs
 - Avoid role labels as RECORD_TYPE (EMPLOYEE, VENDOR, CUSTOMER). Use intrinsic types (PERSON, ORGANIZATION) to preserve cross‑type resolution.
 - Many watchlists have standardized on values such as VESSEL and AIRCRAFT. You do not need to register these in Senzing to use them as RECORD_TYPE.
 - If you add such types, also include their appropriate identifiers as FEATURES so matching remains effective (e.g., `IMO_NUMBER`, `CALL_SIGN` for vessels; `AIRCRAFT_TAIL_NUMBER` for aircraft).
-
 
 ## Feature: NAME
 Importance: High
@@ -545,23 +471,6 @@ Examples
   ]
 }
 ```
-- ❌ Incorrect (split across multiple NAME objects)
-```json
-{
-  "FEATURES": [
-    { "NAME_LAST": "Smith" },
-    { "NAME_FIRST": "Robert" }
-  ]
-}
-```
-- ❌ Incorrect (mixing NAME_ORG with parsed person fields)
-```json
-{
-  "FEATURES": [
-    { "NAME_ORG": "Acme Tire Inc.", "NAME_FIRST": "Robert" }
-  ]
-}
-```
 
 ## Feature: ADDRESS
 Importance: High
@@ -601,14 +510,6 @@ Examples
 {
   "FEATURES": [
     { "ADDR_TYPE": "MAILING", "ADDR_FULL": "3 Underhill Way, Las Vegas, NV 89101, US" }
-  ]
-}
-```
-- ❌ Incorrect (mixing ADDR_FULL with parsed fields)
-```json
-{
-  "FEATURES": [
-    { "ADDR_FULL": "123 Main St, Las Vegas, NV 89132", "ADDR_CITY": "Las Vegas" }
   ]
 }
 ```
