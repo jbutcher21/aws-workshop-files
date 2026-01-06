@@ -326,7 +326,8 @@ if entities_mapped < entities_identified:
    - Sample JSON for each entity
    - Any AI should be able to generate code from this file alone
 3. **[name]_mapper.py** - Python mapper implementation:
-   - Expect large source files; write efficient code
+   - Expect large source files (100K+ records); write efficient code
+   - For multi-pass processing (child tables, relationships): load lookups into keyed dictionaries FIRST, then iterate master records once
    - Prefer stdlib; recommend third-party libraries (with pros/cons) if needed for performance
    - Arguments for File/dir input, JSONL output
    - `--sample N` flag for testing
