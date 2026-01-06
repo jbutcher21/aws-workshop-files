@@ -215,7 +215,7 @@ Sources vary — CSV/TSV and relational tables, JSON/JSONL, XML, Parquet, and gr
 ## Unified terms (applies to all sources)
 - Master entity: the master person or organization record (a master table row, a graph node, or a top‑level JSON/XML object). One master → one Senzing entity document.
 - Identifying attributes: the attributes that identify/describe the entity (names, addresses, phones, emails, identifiers, websites, etc.). These may appear on the master itself or inside child lists/structures.
-- Child lists: one‑to‑many data linked to the master. Depending on source, these appear as separate tables, JSON arrays under the master object, repeated XML elements, Parquet list<struct> columns, or graph attribute nodes. Usually each child record represents one (name, address, phone, identifier, etc.) and contains a type such as alias or dba for a name, home, mailing etc for an address, drivers license, passport, tax_id, etc for an identifier.
+- Child lists: one‑to‑many data with ONE foreign key to the master. Depending on source, these appear as separate tables, JSON arrays under the master object, repeated XML elements, Parquet list<struct> columns, or graph attribute nodes. Usually each child record represents one (name, address, phone, identifier, etc.) and contains a type such as alias or dba for a name, home, mailing etc for an address, drivers license, passport, tax_id, etc for an identifier.
 - Disclosed relationships: links between source records (masters) (person↔org, person↔person, org↔org). Depending on source, these appear as link/bridge tables, foreign keys to other master IDs, JSON pointers, XML references, Parquet join keys, or graph edges. 
 
 ## Format notes (how to spot masters, children, and disclosed relationships)
