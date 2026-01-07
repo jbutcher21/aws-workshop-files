@@ -538,132 +538,28 @@ Examples
 }
 ```
 
-## Physical and other attributes
+## Simple Scalar Attributes
 
-### Feature: GENDER
-Importance: Low-Medium
+These single-value attributes follow the same pattern: `{ "ATTRIBUTE": "value" }`.
 
-| Attribute | Example | Guidance |
-| ---       | ---     | --- |
-| GENDER    | M       | Gender code or label from the source. For matching, only M, F, Male, and Female are considered; other values are ignored to avoid denials (e.g., M vs UNK). |
-
-Example
-```json
-{
-  "FEATURES": [
-    { "GENDER": "F" }
-  ]
-}
-```
-
-### Feature: DOB (Date of Birth)
-Importance: High
-
-| Attribute       | Example     | Guidance |
-| ---             | ---         | --- |
-| DATE_OF_BIRTH   | 1980-05-14  | Complete dates preferred; partial dates accepted when only partial is available (e.g., YYYY‑MM or MM‑DD). |
-
-Examples
-```json
-{
-  "FEATURES": [
-    { "DATE_OF_BIRTH": "1980-05-14" }
-  ]
-}
-```
-
-### Feature: DOD (Date of Death)
-Importance: Low-Medium
-
-| Attribute       | Example     | Guidance |
-| ---             | ---         | --- |
-| DATE_OF_DEATH   | 2010-05-14  | Complete dates preferred; partial dates accepted when only partial is available (e.g., YYYY‑MM or MM‑DD). |
+| Attribute | Importance | Example | Guidance |
+| --- | --- | --- | --- |
+| DATE_OF_BIRTH | High | 1980-05-14 | Complete dates preferred; partial dates accepted (YYYY-MM or MM-DD). |
+| GENDER | Low-Medium | M | Only M, F, Male, Female are matched; other values ignored. |
+| DATE_OF_DEATH | Low-Medium | 2010-05-14 | Complete dates preferred; partial dates accepted. |
+| NATIONALITY | Low | US | Country of nationality (code or label). |
+| CITIZENSHIP | Low | US | Country of citizenship (code or label). |
+| PLACE_OF_BIRTH | Low | Chicago | City/region or country code/label. |
+| REGISTRATION_DATE | Low-Medium | 2010-05-14 | Organization registration date. Complete dates preferred. |
+| REGISTRATION_COUNTRY | Low | US | Organization country of registration (code or label). |
 
 Example
 ```json
 {
   "FEATURES": [
-    { "DATE_OF_DEATH": "2010-05-14" }
-  ]
-}
-```
-
-### Feature: NATIONALITY
-Importance: Low
-
-| Attribute   | Example | Guidance |
-| ---         | ---     | --- |
-| NATIONALITY | US      | Country of nationality (code or label) as provided by the source. |
-
-Example
-```json
-{
-  "FEATURES": [
+    { "DATE_OF_BIRTH": "1980-05-14" },
+    { "GENDER": "F" },
     { "NATIONALITY": "US" }
-  ]
-}
-```
-
-### Feature: CITIZENSHIP
-Importance: Low
-
-| Attribute   | Example | Guidance |
-| ---         | ---     | --- |
-| CITIZENSHIP | US      | Country of citizenship (code or label) as provided by the source. |
-
-Example
-```json
-{
-  "FEATURES": [
-    { "CITIZENSHIP": "US" }
-  ]
-}
-```
-
-### Feature: POB (Place of Birth)
-Importance: Low
-
-| Attribute        | Example   | Guidance |
-| ---              | ---       | --- |
-| PLACE_OF_BIRTH   | Chicago   | Place of birth; may be a city/region or a country code/label as provided by the source. |
-
-Example
-```json
-{
-  "FEATURES": [
-    { "PLACE_OF_BIRTH": "Chicago, IL" }
-  ]
-}
-```
-
-### Feature: REGISTRATION_DATE (Organizations)
-Importance: Low-Medium
-
-| Attribute          | Example     | Guidance |
-| ---                | ---         | --- |
-| REGISTRATION_DATE  | 2010-05-14  | Organization registration/incorporation date. Complete dates preferred; partial dates accepted when only partial is available (e.g., YYYY‑MM or MM‑DD). |
-
-Example
-```json
-{
-  "FEATURES": [
-    { "REGISTRATION_DATE": "2010-05-14" }
-  ]
-}
-```
-
-### Feature: REGISTRATION_COUNTRY (Organizations)
-Importance: Low
-
-| Attribute             | Example | Guidance |
-| ---                   | ---     | --- |
-| REGISTRATION_COUNTRY  | US      | Country of registration (code or label) as provided by the source. |
-
-Example
-```json
-{
-  "FEATURES": [
-    { "REGISTRATION_COUNTRY": "US" }
   ]
 }
 ```
@@ -883,38 +779,12 @@ Example
 }
 ```
 
-## Feature: EMAIL
-Importance: Medium
+## Features: EMAIL and WEBSITE
 
-| Attribute      | Example                | Guidance |
-| ---            | ---                    | --- |
-| EMAIL_ADDRESS  | someone@somewhere.com  | Email address. |
-
-
-Example
-```json
-{
-  "FEATURES": [
-    { "EMAIL_ADDRESS": "alex@example.com" }
-  ]
-}
-```
-
-## Feature: WEBSITE
-Importance: Low
-
-| Attribute        | Example          | Guidance |
-| ---              | ---              | --- |
-| WEBSITE_ADDRESS  | somecompany.com  | Website or domain; typically for organizations. |
-
-Example
-```json
-{
-  "FEATURES": [
-    { "WEBSITE_ADDRESS": "acmetire.com" }
-  ]
-}
-```
+| Attribute | Importance | Example | Guidance |
+| --- | --- | --- | --- |
+| EMAIL_ADDRESS | Medium | alex@example.com | Email address. |
+| WEBSITE_ADDRESS | Low | acmetire.com | Website or domain; typically for organizations. |
 
 ## Features for Social Media Handles
 Importance: Medium
