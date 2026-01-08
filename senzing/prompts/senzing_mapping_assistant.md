@@ -202,6 +202,7 @@ If all done: "✅ ALL [N] MASTER ENTITIES MAPPED. Proceeding to Stage 5."
    - Note: sz_json_analyzer provides statistics, feature usage, and validates the JSONL structure
 2. **[name]_mapper.md** - Complete mapping specification (source of truth):
    - All entities mapped with field dispositions
+   - Include source Type column (list/str/int/etc.) so any AI knows how to handle each field
    - All decisions made (DATA_SOURCE codes, confidence choices, etc.)
    - All mapping tables (identifier types, usage types, relationship roles)
    - Sample JSON for each entity

@@ -16,9 +16,7 @@ This document provides concise command-line reference for Senzing tools used in 
 
 **Environment Requirement:**
 Senzing core tools require environment variables from `~/.bashrc`. When running via Bash tool, always use:
-```bash
 source ~/.bashrc && <senzing_tool> <args>
-```
 
 ---
 
@@ -29,9 +27,7 @@ source ~/.bashrc && <senzing_tool> <args>
 **When to run:** Before mapping, to understand source data structure.
 
 **AI Command:**
-```bash
 python3 senzing/tools/sz_schema_generator.py <input_file> -o <source_filename>_schema.md
-```
 
 **Reading output:**
 - Markdown file with field statistics table
@@ -40,9 +36,7 @@ python3 senzing/tools/sz_schema_generator.py <input_file> -o <source_filename>_s
 - Success indicator: Exit code 0 and message "markdown schema saved to <filename>"
 
 **Example:**
-```bash
 python3 senzing/tools/sz_schema_generator.py customers.csv -o customers_schema.md
-```
 
 ---
 
@@ -53,9 +47,7 @@ python3 senzing/tools/sz_schema_generator.py customers.csv -o customers_schema.m
 **When to run:** During mapping development as a self-test on sample JSON records created by AI. Used to verify JSON structure is correct before writing the full mapper code.
 
 **AI Command:**
-```bash
 python3 senzing/tools/lint_senzing_json.py <file.jsonl>
-```
 
 **Reading output:**
 - Exit code 0 = validation passed, ready to proceed
@@ -81,9 +73,7 @@ python3 senzing/tools/lint_senzing_json.py <file.jsonl>
 **When to run:** After mapper code generates the complete JSONL output file, before loading. This is the critical pre-load check that provides comprehensive analysis of the entire mapped dataset.
 
 **AI Command:**
-```bash
 python3 senzing/tools/sz_json_analyzer.py <input.jsonl> -o <analysis>.md
-```
 
 **IMPORTANT:** Always use `.md` extension for AI-friendly structured format.
 
@@ -142,16 +132,13 @@ NEXT STEPS:
 **When to run:** After analyzer shows "DATA_SOURCE not found" error, before loading.
 
 **AI Command:**
-```bash
-# Create config file
+Create config file, then apply:
 cat > <project>_config.g2c << 'EOF'
 addDataSource <DATA_SOURCE_NAME>
 save
 EOF
 
-# Apply configuration
 source ~/.bashrc && sz_configtool -f <project>_config.g2c
-```
 
 **Reading output:**
 - Success: Shows "Configuration saved"
@@ -162,13 +149,11 @@ source ~/.bashrc && sz_configtool -f <project>_config.g2c
 "Added DATA_SOURCE '<NAME>' to Senzing configuration. Ready to load data with sz_file_loader."
 
 **Example:**
-```bash
 cat > customers_config.g2c << 'EOF'
 addDataSource CUSTOMERS
 save
 EOF
 source ~/.bashrc && sz_configtool -f customers_config.g2c
-```
 
 ---
 
@@ -179,9 +164,7 @@ source ~/.bashrc && sz_configtool -f customers_config.g2c
 **When to run:** After linting passes, analyzer shows no critical errors, and all DATA_SOURCE values are configured.
 
 **AI Command:**
-```bash
 source ~/.bashrc && sz_file_loader -f <file.jsonl>
-```
 
 **Reading output:**
 - Exit code 0 = load successful
@@ -219,9 +202,7 @@ Next step: Run sz_snapshot to analyze entity resolution results
 **When to run:** After loading data with sz_file_loader, to understand match quality and entity distribution.
 
 **AI Command:**
-```bash
 source ~/.bashrc && sz_snapshot -o <project>-snapshot-$(date +%Y-%m-%d) -Q
-```
 
 **Note:** `-Q` flag prevents interactive prompts (recommended for automation).
 
@@ -282,37 +263,32 @@ Which would you like to explore, or something else?
 
 **Complete data mapping and loading process:**
 
-```bash
-# 1. Analyze source data
-python3 senzing/tools/sz_schema_generator.py source.csv -o source_schema.md
+1. Analyze source data
+   python3 senzing/tools/sz_schema_generator.py source.csv -o source_schema.md
 
-# 2. Develop mapper (AI-assisted)
-#    - AI creates sample JSON records
-#    - AI runs linter on samples to validate structure
-#    - AI generates mapper code once samples pass linting
+2. Develop mapper (AI-assisted)
+   - AI creates sample JSON records
+   - AI runs linter on samples to validate structure
+   - AI generates mapper code once samples pass linting
 
-# 3. Run mapper to generate complete output
-python3 mapper.py source.csv output.jsonl
+3. Run mapper to generate complete output
+   python3 mapper.py source.csv output.jsonl
 
-# 4. Analyze mapping quality on complete dataset
-python3 senzing/tools/sz_json_analyzer.py output.jsonl -o analysis.md
-# Read analysis.md and provide summary to user
+4. Analyze mapping quality on complete dataset
+   python3 senzing/tools/sz_json_analyzer.py output.jsonl -o analysis.md
 
-# 5. Configure data sources (if needed)
-cat > project_config.g2c << 'EOF'
-addDataSource DATASOURCE_NAME
-save
-EOF
-source ~/.bashrc && sz_configtool -f project_config.g2c
+5. Configure data sources (if needed)
+   cat > project_config.g2c << 'EOF'
+   addDataSource DATASOURCE_NAME
+   save
+   EOF
+   source ~/.bashrc && sz_configtool -f project_config.g2c
 
-# 6. Load data
-source ~/.bashrc && sz_file_loader -f output.jsonl
-# Provide load summary to user
+6. Load data
+   source ~/.bashrc && sz_file_loader -f output.jsonl
 
-# 7. Analyze results
-source ~/.bashrc && sz_snapshot -o project-snapshot-$(date +%Y-%m-%d) -Q
-# Provide snapshot analysis summary to user
-```
+7. Analyze results
+   source ~/.bashrc && sz_snapshot -o project-snapshot-$(date +%Y-%m-%d) -Q
 
 ---
 
