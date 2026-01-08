@@ -190,17 +190,19 @@ def lint_record(doc: Any, where: str, *, strict: bool = True) -> List[str]:
     for k, v in doc.items():
         if k in ALLOWED_ROOT_KEYS:
             continue
-        # Check if this is a feature attribute that should not be at root level
-        if k in KEY_TO_FAMILY:
+        # Check if this is a feature attribute that should not be at root level (case-insensitive)
+        k_upper = k.upper()
+        if k_upper in KEY_TO_FAMILY:
             errors.append(
                 f"{where}: Feature attribute '{k}' must be inside FEATURES array, not at root level"
+                + (f" (use uppercase {k_upper})" if k != k_upper else "")
             )
             continue
-        # Check for feature name embedded in payload attribute (e.g., ACCOUNT_REGISTRATION_DATE contains REGISTRATION_DATE)
+        # Check for feature name embedded in payload attribute (case-insensitive)
         for reserved in KEY_TO_FAMILY.keys():
-            if reserved in k and k != reserved:
+            if reserved in k_upper and k_upper != reserved:
                 # Check for prefix_ or _suffix patterns
-                if k.startswith(reserved + "_") or k.endswith("_" + reserved) or ("_" + reserved + "_") in k:
+                if k_upper.startswith(reserved + "_") or k_upper.endswith("_" + reserved) or ("_" + reserved + "_") in k_upper:
                     errors.append(
                         f"{where}: Payload attribute '{k}' contains reserved feature name '{reserved}'; "
                         f"rename to something materially different (e.g., use 'signup_date' not 'ACCOUNT_REGISTRATION_DATE')"

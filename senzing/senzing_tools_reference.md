@@ -332,4 +332,4 @@ source ~/.bashrc && sz_snapshot -o project-snapshot-$(date +%Y-%m-%d) -Q
 
 For AI assistants with MCP (Model Context Protocol) support, the **Senzing MCP Server** provides interactive access to entity resolution results after data is loaded.
 
-See [SENZING_MCP_REFERENCE.md](SENZING_MCP_REFERENCE.md) for tools and response formatting.
+See [senzing_mcp_reference.md](senzing_mcp_reference.md) for tools and response formatting.
