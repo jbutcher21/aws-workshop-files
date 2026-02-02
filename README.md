@@ -45,7 +45,6 @@ This repository supports a proven method for mapping source systems to Senzing:
 4. **Validate Mapping** — Lint and analyze output quality
 5. **Load Data** — Import into Senzing
 6. **Analyze Resolved Data** — Run snapshot, explore with MCP server
-7. **Key Takeaways** — Review learnings
 
 ## Prerequisites
 
@@ -68,7 +67,11 @@ This repository supports a proven method for mapping source systems to Senzing:
 - Mixed entity types (PERSON and ORGANIZATION in same file)
 - Payload attributes (operational data)
 
-**Expected Outcome:** ~78 entities (35% compression)
+**Expected Outcome:**
+- Working mapper code
+- Validated Senzing JSON output
+- Data loaded and entities resolved
+- Explore results via MCP server
 
 **Solution:** `solutions/customers/`
 
@@ -86,7 +89,11 @@ This repository supports a proven method for mapping source systems to Senzing:
 - Merging relationship records onto master entities
 - Cross-DATA_SOURCE relationships
 
-**Expected Outcome:** ~92 entities (42% compression). Look for cross-source matches.
+**Expected Outcome:**
+- Working mapper code with relationship handling
+- Validated Senzing JSON output
+- Data loaded and entities resolved
+- Cross-source matches with Exercise 1 data
 
 **Solution:** `solutions/watchlist/`
 
