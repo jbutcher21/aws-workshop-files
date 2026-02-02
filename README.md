@@ -88,17 +88,7 @@ python3 senzing/tools/sz_json_analyzer.py output.jsonl -o analysis.md
 ```
 
 ### Senzing Core Tools
-Require `source ~/.bashrc` for environment:
-```bash
-# Configure data sources
-source ~/.bashrc && sz_configtool -f config.g2c
-
-# Load data
-source ~/.bashrc && sz_file_loader -f output.jsonl
-
-# Analyze results
-source ~/.bashrc && sz_snapshot -o snapshot-$(date +%Y-%m-%d) -Q
-```
+Requires Senzing SDK: `sz_configtool`, `sz_file_loader`, `sz_snapshot`
 
 ## Prerequisites
 
