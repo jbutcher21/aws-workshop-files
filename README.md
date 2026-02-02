@@ -4,20 +4,6 @@ Transform source data into Senzing JSON format, load it, and analyze entity reso
 
 **Note:** Workshop course instructions are in a separate repository. This contains the technical files for exercises.
 
-## Quick Start
-
-1. **Verify your setup**
-   - AI assistant configured in your IDE
-   - MCP server connected (if using): ask your AI "Get entity 1" to test
-
-2. **Load the mapping assistant**
-   - Ask your AI to read `senzing/prompts/senzing_mapping_assistant.md`
-   - This guides you through a 5-stage mapping workflow
-
-3. **Start Exercise 1** (below)
-   - Your AI assistant has access to all reference materials
-   - Solutions in `solutions/` if you get stuck
-
 ## Exercises
 
 ### Exercise 1: Customer Data
@@ -119,7 +105,7 @@ source ~/.bashrc && sz_snapshot -o snapshot-$(date +%Y-%m-%d) -Q
 - **Python 3.x** — standard library only
 - **Senzing** — pre-configured in workshop environment
 - **IDE with AI assistant** — for AI-assisted mapping workflow
-- **MCP server** (optional) — for natural language entity exploration
+- **MCP server** (optional) — test with "Get entity 1"
 
 ## Resources
 
