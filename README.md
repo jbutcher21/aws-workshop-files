@@ -31,9 +31,9 @@ Transform source data into Senzing JSON format, load it, and analyze entity reso
 
 ## Key Documents
 
-- **`senzing/senzing_tools_reference.md`** — Describes all tools and when to use them
-- **`senzing/prompts/senzing_mapping_assistant.md`** — Guides you through the mapping process
-- **`senzing/senzing_mcp_reference.md`** — How to use the MCP server to ask questions about resolved entities
+- [Tools Reference](senzing/senzing_tools_reference.md) — Describes all tools and when to use them
+- [Mapping Assistant](senzing/prompts/senzing_mapping_assistant.md) — Guides you through the mapping process
+- [MCP Reference](senzing/senzing_mcp_reference.md) — How to use the MCP server to ask questions about resolved entities
 
 ## Workflow
 
@@ -49,7 +49,7 @@ This repository supports a proven method for mapping source systems to Senzing:
 ## Prerequisites
 
 - **Python 3.x** — standard library only
-- **Senzing** — pre-configured in workshop environment
+- **Senzing v4** — pre-configured in workshop environment
 - **IDE with AI assistant** — for AI-assisted mapping workflow
 - **MCP server** (optional) — test with "Get entity 1"
 
