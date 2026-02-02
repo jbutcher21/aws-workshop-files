@@ -55,7 +55,8 @@ Transform source data into Senzing JSON format, load it, and analyze entity reso
 │   │   ├── sz_schema_generator.py        # Generate schema from source data
 │   │   ├── lint_senzing_json.py          # Validate JSON structure
 │   │   └── sz_json_analyzer.py           # Analyze mapping quality
-│   └── senzing_tools_reference.md        # Complete tool documentation
+│   ├── senzing_tools_reference.md        # Tool documentation
+│   └── senzing_mcp_reference.md          # MCP server usage
 ├── solutions/                            # Reference implementations
 │   ├── customers/                        # mapper.md, mapper.py, schema.md
 │   └── watchlist/                        # mapper.md, mapper.py, schema.md
@@ -64,31 +65,25 @@ Transform source data into Senzing JSON format, load it, and analyze entity reso
     └── watchlist/ftm.jsonl
 ```
 
-## Tools
+## Key Documents
 
-All Python tools use standard library only — no pip install needed.
+- **`senzing/senzing_tools_reference.md`** — Describes all tools and when to use them
+- **`senzing/prompts/senzing_mapping_assistant.md`** — Guides you through the mapping process
+- **`senzing/senzing_mcp_reference.md`** — How to use the MCP server to ask questions about resolved entities
 
-### Schema Generator
-Analyze source data structure at the start of mapping:
-```bash
-python3 senzing/tools/sz_schema_generator.py input.csv -o schema.md
-```
+## Workflow
 
-### Linter (Development)
-Validate Senzing JSON structure during development:
-```bash
-python3 senzing/tools/lint_senzing_json.py output.jsonl
-python3 senzing/tools/lint_senzing_json.py --self-test  # verify linter works
-```
+This repository supports a proven method for mapping source systems to Senzing:
 
-### Analyzer (Production)
-Check full output before loading:
-```bash
-python3 senzing/tools/sz_json_analyzer.py output.jsonl -o analysis.md
-```
-
-### Senzing Core Tools
-Requires Senzing SDK: `sz_configtool`, `sz_file_loader`, `sz_snapshot`
+1. **Generate schema** — Analyze source data structure
+2. **Plan mapping** — Identify entities, relationships, and field dispositions
+3. **Build mapper** — Create transformation code
+4. **Validate output** — Lint sample records during development
+5. **Analyze quality** — Check full output before loading
+6. **Configure data sources** — Register DATA_SOURCE codes
+7. **Load data** — Import into Senzing
+8. **Run snapshot** — Generate entity resolution statistics
+9. **Explore results** — Use MCP server to ask questions about resolved entities
 
 ## Prerequisites
 
@@ -99,11 +94,5 @@ Requires Senzing SDK: `sz_configtool`, `sz_file_loader`, `sz_snapshot`
 
 ## Resources
 
-**Reference Files:**
-- `senzing/reference/senzing_entity_specification.md` — Master Senzing JSON specification
-- `senzing/prompts/senzing_mapping_assistant.md` — AI mapping workflow guide
-- `senzing/senzing_tools_reference.md` — Complete tool documentation
-
-**External:**
 - [Senzing Documentation](https://docs.senzing.com)
 - [FollowTheMoney Format](https://followthemoney.tech) (for watchlist exercise)
