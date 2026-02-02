@@ -56,13 +56,6 @@ This repository supports a proven method for mapping source systems to Senzing:
 - **IDE with AI assistant** — for AI-assisted mapping workflow
 - **MCP server** (optional) — test with "Get entity 1"
 
-## Resources
-
-- [Senzing Entity Resolution Workshop](TBD) — Workshop instructions and slides
-- [Senzing MCP Server](https://github.com/jbutcher21/senzing-mcp-server) — MCP server for entity exploration
-- [Senzing Documentation](https://docs.senzing.com)
-- [FollowTheMoney Format](https://followthemoney.tech) (for watchlist exercise)
-
 ## Exercises
 
 ### Exercise 1: Customer Data
@@ -98,3 +91,10 @@ This repository supports a proven method for mapping source systems to Senzing:
 **Expected Outcome:** ~92 entities (42% compression). Look for cross-source matches.
 
 **Solution:** `solutions/watchlist/`
+
+## Resources
+
+- [Senzing Entity Resolution Workshop](TBD) — Workshop instructions and slides
+- [Senzing MCP Server](https://github.com/jbutcher21/senzing-mcp-server) — MCP server for entity exploration
+- [Senzing Documentation](https://docs.senzing.com)
+- [FollowTheMoney Format](https://followthemoney.tech) (for watchlist exercise)
