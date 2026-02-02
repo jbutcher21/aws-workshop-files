@@ -99,7 +99,7 @@ This repository supports a proven method for mapping source systems to Senzing:
 
 ## Resources
 
-- [Senzing Entity Resolution Workshop](TBD) — Workshop instructions and slides
+- Senzing Entity Resolution Workshop (TBD) — Workshop instructions and slides
 - [Senzing MCP Server](https://github.com/jbutcher21/senzing-mcp-server) — MCP server for entity exploration
 - [Senzing Documentation](https://docs.senzing.com)
 - [FollowTheMoney Format](https://followthemoney.tech) (for watchlist exercise)
