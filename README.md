@@ -4,42 +4,6 @@ Transform source data into Senzing JSON format, load it, and analyze entity reso
 
 **Note:** Workshop course instructions are in a separate repository. This contains the technical files for exercises.
 
-## Exercises
-
-### Exercise 1: Customer Data
-
-**Source:** `workspace/customers/customers.csv` (120 records: 114 persons, 6 organizations)
-
-**Complexity:** Introductory — AI agent leads the workflow
-
-**Learning Focus:**
-- Name parsing (Last, First Middle → NAME_FIRST, NAME_LAST)
-- Identifier type handling (SSN, Driver's License, Passport, National ID)
-- Mixed entity types (PERSON and ORGANIZATION in same file)
-- Payload attributes (operational data)
-
-**Expected Outcome:** ~78 entities (35% compression)
-
-**Solution:** `solutions/customers/`
-
----
-
-### Exercise 2: Watchlist Data
-
-**Source:** `workspace/watchlist/ftm.jsonl` (73 FTM records: persons, companies, relationships)
-
-**Complexity:** Advanced — you direct the AI, applying Exercise 1 learnings
-
-**Learning Focus:**
-- Complex relationship handling (sanctions, ownership, directorship)
-- REL_ANCHOR/REL_POINTER linking between entities
-- Merging relationship records onto master entities
-- Cross-DATA_SOURCE relationships
-
-**Expected Outcome:** ~92 entities (42% compression). Look for cross-source matches.
-
-**Solution:** `solutions/watchlist/`
-
 ## Repository Structure
 
 ```
@@ -95,6 +59,42 @@ This repository supports a proven method for mapping source systems to Senzing:
 ## Resources
 
 - [Senzing Entity Resolution Workshop](TBD) — Workshop instructions and slides
-- [Senzing MCP Servers](https://github.com/senzing-garage/sz-mcp-servers) — MCP server for entity exploration
+- [Senzing MCP Server](https://github.com/jbutcher21/senzing-mcp-server) — MCP server for entity exploration
 - [Senzing Documentation](https://docs.senzing.com)
 - [FollowTheMoney Format](https://followthemoney.tech) (for watchlist exercise)
+
+## Exercises
+
+### Exercise 1: Customer Data
+
+**Source:** `workspace/customers/customers.csv` (120 records: 114 persons, 6 organizations)
+
+**Complexity:** Introductory — AI agent leads the workflow
+
+**Learning Focus:**
+- Name parsing (Last, First Middle → NAME_FIRST, NAME_LAST)
+- Identifier type handling (SSN, Driver's License, Passport, National ID)
+- Mixed entity types (PERSON and ORGANIZATION in same file)
+- Payload attributes (operational data)
+
+**Expected Outcome:** ~78 entities (35% compression)
+
+**Solution:** `solutions/customers/`
+
+---
+
+### Exercise 2: Watchlist Data
+
+**Source:** `workspace/watchlist/ftm.jsonl` (73 FTM records: persons, companies, relationships)
+
+**Complexity:** Advanced — you direct the AI, applying Exercise 1 learnings
+
+**Learning Focus:**
+- Complex relationship handling (sanctions, ownership, directorship)
+- REL_ANCHOR/REL_POINTER linking between entities
+- Merging relationship records onto master entities
+- Cross-DATA_SOURCE relationships
+
+**Expected Outcome:** ~92 entities (42% compression). Look for cross-source matches.
+
+**Solution:** `solutions/watchlist/`
