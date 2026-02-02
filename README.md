@@ -39,15 +39,13 @@ Transform source data into Senzing JSON format, load it, and analyze entity reso
 
 This repository supports a proven method for mapping source systems to Senzing:
 
-1. **Generate schema** — Analyze source data structure
-2. **Plan mapping** — Identify entities, relationships, and field dispositions
-3. **Build mapper** — Create transformation code
-4. **Validate output** — Lint sample records during development
-5. **Analyze quality** — Check full output before loading
-6. **Configure data sources** — Register DATA_SOURCE codes
-7. **Load data** — Import into Senzing
-8. **Run snapshot** — Generate entity resolution statistics
-9. **Explore results** — Use MCP server to ask questions about resolved entities
+1. **Explore Senzing** — Understand the entity resolution environment
+2. **Generate Schema** — Analyze source data structure
+3. **Map with Assistant** — 5-stage AI-guided process (Init, Inventory, Planning, Mapping, Outputs)
+4. **Validate Mapping** — Lint and analyze output quality
+5. **Load Data** — Import into Senzing
+6. **Analyze Resolved Data** — Run snapshot, explore with MCP server
+7. **Key Takeaways** — Review learnings
 
 ## Prerequisites
 
